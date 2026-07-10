@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report.experiment_name }} - ExperimentIQ Report</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- COVER PAGE -->
+    <div class="cover-page">
+        <div class="logo">ExperimentIQ</div>
+        <h1>Experiment Report</h1>
+        <h2 class="experiment-title">{{ report.experiment_name }}</h2>
+        <div class="date-generated">Generated on: {{ date }}</div>
+        
+        <div class="badge-container">
+            {% set rec_class = report.recommendation.recommendation.value | lower | replace('_', '-') %}
+            <div class="recommendation-badge {{ rec_class }}">
+                {{ report.recommendation.decision }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+
+    <!-- EXECUTIVE SUMMARY -->
+    <div class="section">
+        <h2 class="section-title">Executive Summary</h2>
+        <p class="summary-text">{{ report.recommendation.summary }}</p>
+    </div>
+
+    <!-- KEY METRICS -->
+    <div class="section">
+        <h2 class="section-title">Key Metrics (Purchase Conversion)</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Control</th>
+                    <th>Variant</th>
+                    <th>Difference</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Sample Size (Users)</td>
+                    <td>{{ report.z_test.control_n | num }}</td>
+                    <td>{{ report.z_test.variant_n | num }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>Conversions (Purchases)</td>
+                    <td>{{ report.z_test.control_conversions | num }}</td>
+                    <td>{{ report.z_test.variant_conversions | num }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>Conversion Rate</td>
+                    <td>{{ report.z_test.control_rate | pct }}</td>
+                    <td>{{ report.z_test.variant_rate | pct }}</td>
+                    <td>
+                        <strong>{{ report.z_test.absolute_lift * 100 | round(2) }}% (Absolute)</strong><br>
+                        <em>{{ report.z_test.relative_lift_pct | round(2) }}% (Relative)</em>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- STATISTICAL RESULTS -->
+    <div class="section">
+        <h2 class="section-title">Statistical Analysis</h2>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-label">P-Value</div>
+                <div class="card-value">{{ report.z_test.p_value | round(4) }}</div>
+                <div class="card-sub">Alpha: {{ report.z_test.alpha }}</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Significance</div>
+                <div class="card-value {% if report.z_test.is_significant %}text-green{% else %}text-red{% endif %}">
+                    {% if report.z_test.is_significant %}Significant{% else %}Not Significant{% endif %}
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-label">Statistical Power</div>
+                <div class="card-value">{{ report.power_analysis.achieved_power | pct }}</div>
+                <div class="card-sub">Target: 80%</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Effect Size (Cohen's h)</div>
+                <div class="card-value">{{ report.effect_size.cohens_h | round(3) }}</div>
+                <div class="card-sub">{{ report.effect_size.magnitude | title }}</div>
+            </div>
+        </div>
+        
+        <p><strong>95% Confidence Interval for Difference:</strong> 
+        [{{ report.confidence_interval.lower * 100 | round(2) }}%, {{ report.confidence_interval.upper * 100 | round(2) }}%]</p>
+        
+        {% if report.srm_result.srm_detected %}
+        <div class="alert alert-danger">
+            <strong>Sample Ratio Mismatch (SRM) Detected!</strong> 
+            The observed variant split differs significantly from the expected {{ report.srm_result.expected_split | pct }} split (p-value: {{ report.srm_result.p_value | round(4) }}). 
+            This indicates a critical data quality or assignment issue. The experiment results cannot be trusted.
+        </div>
+        {% else %}
+        <div class="alert alert-success">
+            <strong>No SRM Detected.</strong> The observed variant split aligns with the expected configuration.
+        </div>
+        {% endif %}
+    </div>
+
+    {% if charts.get("conversion_trend") %}
+    <div class="section">
+        <h2 class="section-title">Cumulative Conversion Trend</h2>
+        <div class="chart-container">
+            <img src="data:image/png;base64,{{ charts.conversion_trend }}" alt="Conversion Trend Chart">
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="page-break"></div>
+    
+    <!-- DETAILED RECOMMENDATION REASONING -->
+    <div class="section">
+        <h2 class="section-title">Decision Rule Evaluation</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Rule</th>
+                    <th>Threshold</th>
+                    <th>Observed</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rule in report.recommendation.rule_results %}
+                <tr>
+                    <td>{{ rule.rule_name }}</td>
+                    <td>{{ rule.threshold | round(4) }}</td>
+                    <td>{{ rule.actual_value | round(4) }}</td>
+                    <td class="{% if rule.passed %}text-green{% else %}text-red{% endif %}">
+                        {% if rule.passed %}PASS{% else %}FAIL{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- FOOTER -->
+    <div class="footer">
+        Generated by ExperimentIQ Pipeline • {{ date }}
+    </div>
+
+</body>
+</html>

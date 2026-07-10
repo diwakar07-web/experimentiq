@@ -1,0 +1,45 @@
+# ==============================================================================
+# ExperimentIQ — Docker Compose
+# Provisions a PostgreSQL 16 database for local development.
+# ==============================================================================
+version: "3.9"
+
+services:
+
+  # ----------------------------------------------------------------------------
+  # PostgreSQL 16 — Primary analytical database
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: experimentiq_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-experimentiq}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-experimentiq_password}
+      POSTGRES_DB: ${DB_NAME:-experimentiq_db}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Automatically execute schema on first start
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./database/constraints.sql:/docker-entrypoint-initdb.d/02_constraints.sql
+      - ./database/indexes.sql:/docker-entrypoint-initdb.d/03_indexes.sql
+      - ./database/views.sql:/docker-entrypoint-initdb.d/04_views.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-experimentiq} -d ${DB_NAME:-experimentiq_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - experimentiq_network
+
+volumes:
+  postgres_data:
+    name: experimentiq_postgres_data
+
+networks:
+  experimentiq_network:
+    name: experimentiq_network
+    driver: bridge

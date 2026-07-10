@@ -1,0 +1,214 @@
+/* 
+    ExperimentIQ PDF Report Styles 
+    Designed for WeasyPrint compatibility 
+*/
+
+@page {
+    size: A4;
+    margin: 2cm;
+    @bottom-center {
+        content: counter(page);
+        font-family: Arial, sans-serif;
+        font-size: 9pt;
+        color: #7f8c8d;
+    }
+}
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #2c3e50;
+    line-height: 1.5;
+    font-size: 11pt;
+}
+
+/* Typography */
+h1 {
+    font-size: 28pt;
+    color: #1a2c5b; /* Dark Blue */
+    margin-bottom: 0.2em;
+}
+
+h2 {
+    font-size: 18pt;
+    color: #1a2c5b;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 5px;
+}
+
+/* Cover Page */
+.cover-page {
+    text-align: center;
+    margin-top: 15vh;
+}
+
+.logo {
+    font-size: 24pt;
+    font-weight: bold;
+    color: #3498db;
+    letter-spacing: 2px;
+    margin-bottom: 2cm;
+}
+
+.experiment-title {
+    font-size: 20pt;
+    color: #34495e;
+    margin-bottom: 1cm;
+    border: none;
+}
+
+.date-generated {
+    color: #7f8c8d;
+    font-size: 12pt;
+    margin-bottom: 3cm;
+}
+
+/* Recommendation Badge */
+.badge-container {
+    margin-top: 2cm;
+    display: flex;
+    justify-content: center;
+}
+
+.recommendation-badge {
+    display: inline-block;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 18pt;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.launch { background-color: #27ae60; }
+.continue-experiment { background-color: #f39c12; }
+.stop-for-futility { background-color: #e74c3c; }
+.investigate-data-quality { background-color: #c0392b; }
+
+/* Sections */
+.section {
+    margin-bottom: 2em;
+}
+
+.page-break {
+    page-break-before: always;
+}
+
+.summary-text {
+    font-size: 12pt;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-left: 4px solid #3498db;
+    border-radius: 0 4px 4px 0;
+}
+
+/* Tables */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+    font-size: 10pt;
+}
+
+.data-table th {
+    background-color: #1a2c5b;
+    color: white;
+    text-align: left;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.data-table td {
+    border-bottom: 1px solid #ecf0f1;
+    padding: 10px;
+}
+
+.data-table tr:nth-child(even) {
+    background-color: #f9fbfd;
+}
+
+/* Card Grid for KPIs */
+.card-grid {
+    display: table;
+    width: 100%;
+    border-spacing: 15px;
+    margin-left: -15px;
+    margin-right: -15px;
+    margin-bottom: 1.5em;
+}
+
+.card {
+    display: table-cell;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 15px;
+    text-align: center;
+    width: 25%;
+}
+
+.card-label {
+    font-size: 9pt;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.card-value {
+    font-size: 16pt;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 3px;
+}
+
+.card-sub {
+    font-size: 8pt;
+    color: #95a5a6;
+}
+
+/* Utilities */
+.text-green { color: #27ae60; font-weight: bold; }
+.text-red { color: #e74c3c; font-weight: bold; }
+
+.alert {
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.alert-success {
+    background-color: #eafaf1;
+    border-left: 4px solid #27ae60;
+    color: #1e8449;
+}
+
+.alert-danger {
+    background-color: #fdedec;
+    border-left: 4px solid #e74c3c;
+    color: #c0392b;
+}
+
+.chart-container {
+    text-align: center;
+    margin-top: 1em;
+}
+
+.chart-container img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ecf0f1;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 4em;
+    font-size: 9pt;
+    color: #bdc3c7;
+    border-top: 1px solid #ecf0f1;
+    padding-top: 10px;
+}

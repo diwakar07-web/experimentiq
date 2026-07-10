@@ -1,0 +1,81 @@
+# ==============================================================================
+# ExperimentIQ — Code Quality Configuration
+# Tools: black, isort, mypy, flake8
+# ==============================================================================
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.git
+  | \.venv
+  | venv
+  | __pycache__
+  | build
+  | dist
+  | data
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = ["config", "src"]
+skip_glob = ["data/*", ".venv/*", "venv/*"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = false
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+exclude = [
+    "data/",
+    "venv/",
+    ".venv/",
+    "build/",
+    "tests/",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "scipy.*",
+    "statsmodels.*",
+    "matplotlib.*",
+    "seaborn.*",
+    "weasyprint.*",
+    "rich.*",
+    "tqdm.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--tb=short",
+    "-v",
+]
+markers = [
+    "unit: Unit tests (no external dependencies)",
+    "integration: Integration tests (requires database)",
+    "statistical: Statistical correctness tests",
+    "pipeline: End-to-end pipeline tests",
+    "slow: Tests that take > 1 second",
+]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
