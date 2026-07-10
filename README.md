@@ -9,6 +9,10 @@ Built to production-grade standards, this project demonstrates a modern data arc
 ## 🚀 Key Features
 
 ![Pipeline Execution Summary](pipeline_success.png)
+![Daily Conversion Trend](dashboard_line.png)
+![Checkout Funnel (Control)](dashboard_funnel_control.png)
+![Checkout Funnel (Variant)](dashboard_funnel_variant.png)
+![Segment Analysis](dashboard_bar.png)
 
 *   **Massive Data Synthesis:** Generates a realistic, highly-relational dataset of Users, Experiments, Sessions, Events, and Orders with built-in anomalies, funnel drop-offs, and realistic temporal distributions.
 *   **High-Throughput Database Ingestion:** Utilizes `psycopg2` COPY operations to bypass standard ORM bottlenecks, achieving ingestion rates exceeding 20,000 rows/second into PostgreSQL.
